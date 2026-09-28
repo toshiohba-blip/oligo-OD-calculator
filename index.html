@@ -53,6 +53,7 @@ input:focus,textarea:focus,select:focus{border-color:#3b82f6;background:#fff;box
 <div class="title">簡易計算</div>
 <div class="row"><span class="label">総OD値</span><div class="wrap"><input id="od" type="number" inputmode="decimal" min="0" step="any" placeholder="例：1.20"><span class="unit">OD</span></div></div>
 <div class="row"><span class="label">塩基数</span><div class="wrap"><input id="mer" type="number" inputmode="numeric" min="1" step="1" placeholder="例：20"><span class="unit">mer</span></div><div class="hint">1 ODあたり 90 ÷ mer nmol の目安</div></div>
+<div class="row"><span class="label">目標濃度</span><div class="wrap"><input id="target" type="number" inputmode="decimal" min="0.0001" step="any" value="100"><span class="unit">μM</span></div></div>
 </div>
 
 <div id="sequence" class="hidden">
@@ -65,7 +66,7 @@ input:focus,textarea:focus,select:focus{border-color:#3b82f6;background:#fff;box
 <select id="modeType"><option value="ss">ssDNA / RNA：配列特異的ε260</option><option value="ds">dsDNA：50 μg/OD260換算</option></select>
 <div class="hint">dsDNAは二本鎖DNAの一般的な50 μg/OD260換算を使用します。</div></div>
 
-<div class="row"><span class="label">総OD値</span><div class="wrap"><input id="od2" type="number" inputmode="decimal" min="0" step="any" placeholder="例：1.20"><span class="unit">OD</span></div></div>
+
 
 <div class="title">5′ / 3′ 末端修飾</div>
 <div class="grid2">
@@ -138,10 +139,11 @@ function phos(v){return v==="phos"?79.9663:0}
 function modeSet(m){calcMode=m;localStorage.setItem("oligo_mode",m);document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.mode===m));$("simple").classList.toggle("hidden",m!=="simple");$("sequence").classList.toggle("hidden",m!=="sequence");calc();}
 function clearResult(){["mol","vol","mw","ugod"].forEach(id=>$(id).textContent="—");$("ngul").textContent="—";$("status").textContent="入力待ち";$("status").className="status";$("detail").classList.add("hidden");$("stats").classList.add("hidden");}
 function calc(){
- const OD=calcMode==="simple"?parseFloat($("od").value):parseFloat($("od2").value), T=100;
- let target=T, MW=0, eps=0, perOD=0, detail="";
+ const OD=parseFloat($("od").value);
+ const target=parseFloat($("target").value);
+ let MW=0, eps=0, perOD=0, detail="";
  const m5=$("m5").value,m3=$("m3").value;
- if(!(OD>=0)){clearResult();return}
+ if(!(OD>=0) || !(target>0)){clearResult();return}
  if(calcMode==="simple"){
    const mer=parseFloat($("mer").value);if(!(mer>0)){clearResult();return}
    perOD=90/mer;MW=0;
@@ -175,10 +177,16 @@ function calc(){
 }
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>modeSet(b.dataset.mode));
 document.querySelectorAll(".type").forEach(b=>b.onclick=()=>{acid=b.dataset.type;localStorage.setItem("oligo_acid",acid);document.querySelectorAll(".type").forEach(x=>x.classList.toggle("active",x===b));calc();});
-["od","mer","od2","seq","target","modeType","m5","m3","mw5","mw3","e5","e3"].forEach(id=>$(id).addEventListener("input",()=>{if(id==="seq"){$("seq").value=$("seq").value.toUpperCase();$("seqInfo").textContent=`${clean($("seq").value).length} mer`; } $("customMods").classList.toggle("hidden",$("m5").value!=="custom"&&$("m3").value!=="custom");$("customEps").classList.toggle("hidden",$("m5").value!=="custom"&&$("m3").value!=="custom");calc();}));
-$("modeType").addEventListener("change",calc);$("m5").addEventListener("change",calc);$("m3").addEventListener("change",calc);
+function updateCustomFields(){
+  const show=$("m5").value==="custom" || $("m3").value==="custom";
+  $("customMods").classList.toggle("hidden",!show);
+  $("customEps").classList.toggle("hidden",!show);
+}
+["od","mer","seq","target","modeType","m5","m3","mw5","mw3","e5","e3"].forEach(id=>$(id).addEventListener("input",()=>{if(id==="seq"){$("seq").value=$("seq").value.toUpperCase();$("seqInfo").textContent=`${clean($("seq").value).length} mer`; } updateCustomFields();calc();}));
+$("modeType").addEventListener("change",()=>{updateCustomFields();calc();});$("m5").addEventListener("change",()=>{updateCustomFields();calc();});$("m3").addEventListener("change",()=>{updateCustomFields();calc();});
 $("calc").onclick=calc;
-$("reset").onclick=()=>{["od","mer","od2","seq"].forEach(x=>$(x).value="");$("target").value="100";$("m5").value="none";$("m3").value="none";$("mw5").value="0";$("mw3").value="0";$("e5").value="0";$("e3").value="0";calc();};
+$("reset").onclick=()=>{["od","mer","seq"].forEach(x=>$(x).value="");$("target").value="100";$("m5").value="none";$("m3").value="none";$("mw5").value="0";$("mw3").value="0";$("e5").value="0";$("e3").value="0";calc();};
+updateCustomFields();
 modeSet(calcMode);
 })();
 </script>

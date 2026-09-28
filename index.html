@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Oligo計算">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<title>Oligo OD計算 Pro</title>
+<style>
+*{box-sizing:border-box}html{-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#f4f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
+.app{max-width:600px;margin:auto;padding:16px 14px 40px}.header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.logo{width:49px;height:49px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#06b6d4);display:grid;place-items:center;font-size:25px;box-shadow:0 8px 20px #2563eb33}
+h1{font-size:21px;margin:0;font-weight:900;letter-spacing:-.04em}.sub{font-size:11px;color:#64748b;margin-top:3px}
+.card{background:#fff;border:1px solid #e4e9f0;border-radius:22px;padding:16px;box-shadow:0 5px 22px #0f172a0a;margin-bottom:12px}
+.tabs,.type-tabs{display:grid;grid-template-columns:1fr 1fr;background:#e9eef5;border-radius:15px;padding:4px;gap:4px}
+.tab,.type{border:0;background:transparent;border-radius:11px;padding:10px 4px;font-size:12px;font-weight:850;color:#64748b}
+.tab.active,.type.active{background:#fff;color:#1d4ed8;box-shadow:0 2px 8px #0f172a14}
+.title{font-size:14px;font-weight:900;color:#334155;margin:14px 0 10px}
+.row{margin-top:12px}.label{font-size:12px;font-weight:800;color:#475569;margin-bottom:6px;display:block}
+input,textarea,select{width:100%;border:1.5px solid #d6dee9;background:#f8fafc;color:#172033;border-radius:14px;outline:none;transition:.15s}
+input{height:55px;padding:0 56px 0 15px;font-size:19px;font-weight:750}textarea{height:104px;padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;line-height:1.5;resize:vertical}
+select{height:48px;padding:0 12px;font-size:14px;font-weight:650}
+input:focus,textarea:focus,select:focus{border-color:#3b82f6;background:#fff;box-shadow:0 0 0 4px #3b82f620}
+.wrap{position:relative}.unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800;color:#64748b;pointer-events:none}
+.hint{font-size:10px;color:#94a3b8;line-height:1.55;margin-top:5px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.actions{display:flex;gap:8px;margin-top:15px}.btn{height:47px;border:0;border-radius:14px;font-weight:900}.primary{flex:1;background:#2563eb;color:white;box-shadow:0 7px 15px #2563eb33}.secondary{padding:0 15px;background:#edf1f6;color:#475569}
+.result{padding:0;overflow:hidden}.rhead{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#f8fafc;border-bottom:1px solid #e7ecf2}.status{font-size:10px;font-weight:900;border-radius:99px;padding:5px 9px;background:#e2e8f0;color:#64748b}.ok{background:#dcfce7;color:#15803d}
+.rbody{padding:15px}.box{border-radius:18px;padding:15px;margin-bottom:9px}.box:last-child{margin-bottom:0}.green{background:#ecfdf5;border:1px solid #bbf7d0}.blue{background:#eff6ff;border:1px solid #bfdbfe}.gray{background:#f8fafc;border:1px solid #e5eaf1}
+.rlabel{font-size:11px;font-weight:900;margin-bottom:4px}.green .rlabel,.green .big,.green .u{color:#047857}.blue .rlabel,.blue .big,.blue .u{color:#1d4ed8}
+.line{display:flex;align-items:baseline;gap:7px}.big{font-size:35px;font-weight:950;line-height:1.05;letter-spacing:-.045em;word-break:break-all}.u{font-size:13px;font-weight:900}.smallnote{font-size:10px;color:#64748b;margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.stat{text-align:center;background:#f8fafc;border:1px solid #e5eaf1;border-radius:12px;padding:8px 3px}.stat b{display:block;font-size:14px}.stat span{font-size:9px;color:#94a3b8}
+.detail{background:#f8fafc;border:1px dashed #cbd5e1}.detail p{font-size:11px;line-height:1.65;color:#64748b;margin:5px 0}.detail strong{color:#334155}.hidden{display:none!important}
+.footer{text-align:center;color:#94a3b8;font-size:9px;line-height:1.65;padding:4px 12px}
+@media(prefers-color-scheme:dark){body{background:#0f172a;color:#e2e8f0}.card{background:#182235;border-color:#263247}h1,.title,.label{color:#e2e8f0}.sub,.hint,.footer{color:#94a3b8}input,textarea,select{background:#111b2d;color:#f1f5f9;border-color:#334155}input:focus,textarea:focus,select:focus{background:#111b2d}.tabs,.type-tabs{background:#111b2d}.tab,.type{color:#94a3b8}.tab.active,.type.active{background:#263247;color:#93c5fd}.rhead{background:#111b2d;border-color:#263247}.gray,.detail,.stat{background:#111b2d;border-color:#334155}.detail strong,.stat b{color:#cbd5e1}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="header"><div class="logo">🧬</div><div><h1>Oligo OD計算 Pro</h1><div class="sub">OD260・配列・分子量・濃度換算</div></div></header>
+
+<section class="card">
+<div class="tabs">
+<button class="tab active" data-mode="simple">簡易計算</button>
+<button class="tab" data-mode="sequence">配列から計算</button>
+</div>
+
+<div id="simple">
+<div class="title">簡易計算</div>
+<div class="row"><span class="label">総OD値</span><div class="wrap"><input id="od" type="number" inputmode="decimal" min="0" step="any" placeholder="例：1.20"><span class="unit">OD</span></div></div>
+<div class="row"><span class="label">塩基数</span><div class="wrap"><input id="mer" type="number" inputmode="numeric" min="1" step="1" placeholder="例：20"><span class="unit">mer</span></div><div class="hint">1 ODあたり 90 ÷ mer nmol の目安</div></div>
+</div>
+
+<div id="sequence" class="hidden">
+<div class="title">配列から計算</div>
+<div class="row"><span class="label">5′ → 3′ 配列</span><textarea id="seq" spellcheck="false" autocapitalize="characters" placeholder="例：ACGTACGTACGT"></textarea><div id="seqInfo" class="hint">A/C/G/T または A/C/G/U を入力</div></div>
+<div class="row"><span class="label">核酸タイプ</span><div class="type-tabs"><button class="type active" data-type="DNA">ssDNA</button><button class="type" data-type="RNA">RNA</button></div></div>
+</div>
+
+<div class="row"><span class="label">測定・分子タイプ</span>
+<select id="modeType"><option value="ss">ssDNA / RNA：配列特異的ε260</option><option value="ds">dsDNA：50 μg/OD260換算</option></select>
+<div class="hint">dsDNAは二本鎖DNAの一般的な50 μg/OD260換算を使用します。</div></div>
+
+<div class="row"><span class="label">総OD値</span><div class="wrap"><input id="od2" type="number" inputmode="decimal" min="0" step="any" placeholder="例：1.20"><span class="unit">OD</span></div></div>
+
+<div class="title">5′ / 3′ 末端修飾</div>
+<div class="grid2">
+<div><span class="label">5′修飾</span><select id="m5"><option value="none">なし</option><option value="phos">Phosphate</option><option value="custom">カスタム</option></select></div>
+<div><span class="label">3′修飾</span><select id="m3"><option value="none">なし</option><option value="phos">Phosphate</option><option value="custom">カスタム</option></select></div>
+</div>
+<div id="customMods" class="grid2 hidden">
+<div><div class="hint">5′：分子量加算 (Da)</div><input id="mw5" type="number" inputmode="decimal" value="0"></div>
+<div><div class="hint">3′：分子量加算 (Da)</div><input id="mw3" type="number" inputmode="decimal" value="0"></div>
+</div>
+<div id="customEps" class="grid2 hidden">
+<div><div class="hint">5′：ε260補正 (L/mol·cm)</div><input id="e5" type="number" inputmode="decimal" value="0"></div>
+<div><div class="hint">3′：ε260補正 (L/mol·cm)</div><input id="e3" type="number" inputmode="decimal" value="0"></div>
+</div>
+<div class="hint">PhosphateはMW +79.966 Daとして計算。その他の修飾はメーカー仕様値を「カスタム」に入力してください。修飾が260 nmを吸収する場合はε補正も入力します。</div>
+
+<div class="actions"><button class="btn primary" id="calc">計算する</button><button class="btn secondary" id="reset">リセット</button></div>
+</section>
+
+<section class="card result">
+<div class="rhead"><div class="title" style="margin:0">計算結果</div><span id="status" class="status">入力待ち</span></div>
+<div class="rbody">
+<div class="box green"><div class="rlabel">総モル数</div><div class="line"><span id="mol" class="big">—</span><span class="u">nmol</span></div></div>
+<div class="box blue"><div class="rlabel">必要な滅菌水・TEバッファ量</div><div class="line"><span id="vol" class="big">—</span><span class="u">μL</span></div><div id="tnote" class="smallnote">目標濃度：—</div></div>
+<div class="box gray"><div class="rlabel">分子量（平均分子量）</div><div class="line"><span id="mw" class="big" style="color:#334155">—</span><span class="u" style="color:#64748b">Da</span></div></div>
+<div class="box gray"><div class="rlabel">ODからの濃度換算</div><div class="line"><span id="ugod" class="big" style="color:#334155">—</span><span class="u" style="color:#64748b">μg/OD</span></div><div id="ngul" class="smallnote">— ng/μL per OD</div></div>
+<div id="stats" class="stats hidden"><div class="stat"><b id="A">—</b><span>A</span></div><div class="stat"><b id="C">—</b><span>C</span></div><div class="stat"><b id="G">—</b><span>G</span></div><div class="stat"><b id="U">—</b><span id="lastbase">T</span></div></div>
+</div>
+</section>
+
+<section id="detail" class="card detail hidden"><div class="title" style="margin-top:0">計算の内訳</div><div id="details"></div></section>
+
+<section class="card detail">
+<div class="title" style="margin-top:0">単位換算</div>
+<p><strong>1 μg/mL = 1 ng/μL</strong> です。</p>
+<p>目標濃度を100 μMにすると、分子量MWのオリゴでは<strong>100 μM × MW / 1000 = μg/μL</strong>となります。</p>
+<p>配列モードでは、OD260とε260からnmolを求め、MWを掛けて質量濃度へ換算します。</p>
+</section>
+
+<footer class="footer">配列モードのε260はnearest-neighbor法による計算値です。測定条件、光路長、塩・pH、修飾の吸収特性により実測値とは差が生じます。修飾値はメーカー仕様を優先してください。</footer>
+</main>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+let calcMode=localStorage.getItem("oligo_mode")||"simple", acid=localStorage.getItem("oligo_acid")||"DNA";
+
+const DNA_NN={AA:27400,AC:21200,AG:25000,AT:22800,CA:21200,CC:14600,CG:18000,CT:15200,GA:25200,GC:17600,GG:21600,GT:20000,TA:23400,TC:16200,TG:19000,TT:16800};
+const RNA_NN={AA:27400,AC:21000,AG:25000,AU:24000,CA:21000,CC:14200,CG:17800,CU:16200,GA:25200,GC:17400,GG:21600,GU:21200,UA:24600,UC:17200,UG:20000,UU:19600};
+const DNA_BASE={A:15400,C:7400,G:11500,T:8700}, RNA_BASE={A:15400,C:7200,G:11500,U:9900};
+const MW_DNA={A:313.21,C:289.18,G:329.21,T:304.2}, MW_RNA={A:329.21,C:305.18,G:345.21,U:306.18};
+
+function fmt(n){if(!Number.isFinite(n))return "—";if(n===0)return "0";if(Math.abs(n)>=1e6||Math.abs(n)<1e-6)return n.toExponential(5);return n.toLocaleString("ja-JP",{maximumSignificantDigits:7});}
+function clean(s){return(s||"").toUpperCase().replace(/[\s0-9'"′″→\-]/g,"");}
+function calcEps(s,type){
+ const NN=type==="RNA"?RNA_NN:DNA_NN, B=type==="RNA"?RNA_BASE:DNA_BASE;
+ if(s.length===1)return B[s];
+ let sum=0,sub=0;
+ for(let i=0;i<s.length-1;i++)sum+=NN[s.slice(i,i+2)];
+ for(let i=1;i<s.length-1;i++)sub+=B[s[i]];
+ return {eps:sum-sub,sum,sub};
+}
+function calcMW(s,type){
+ const B=type==="RNA"?MW_RNA:MW_DNA;
+ let mw=18.0153;
+ for(const c of s)mw+=B[c];
+ return mw;
+}
+function phos(v){return v==="phos"?79.9663:0}
+function modeSet(m){calcMode=m;localStorage.setItem("oligo_mode",m);document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.mode===m));$("simple").classList.toggle("hidden",m!=="simple");$("sequence").classList.toggle("hidden",m!=="sequence");calc();}
+function clearResult(){["mol","vol","mw","ugod"].forEach(id=>$(id).textContent="—");$("ngul").textContent="—";$("status").textContent="入力待ち";$("status").className="status";$("detail").classList.add("hidden");$("stats").classList.add("hidden");}
+function calc(){
+ const OD=calcMode==="simple"?parseFloat($("od").value):parseFloat($("od2").value), T=100;
+ let target=T, MW=0, eps=0, perOD=0, detail="";
+ const m5=$("m5").value,m3=$("m3").value;
+ if(!(OD>=0)){clearResult();return}
+ if(calcMode==="simple"){
+   const mer=parseFloat($("mer").value);if(!(mer>0)){clearResult();return}
+   perOD=90/mer;MW=0;
+   detail=`<p>簡易法：1 ODあたり <strong>${fmt(perOD)} nmol</strong>（90 ÷ ${fmt(mer)} mer）</p>`;
+ }else{
+   let s=clean($("seq").value), type=acid;
+   const expected=type==="RNA"?/[ACGU]/:/[ACGT]/;
+   if(!s||!expected.test(s)||new RegExp(type==="RNA"?"[^ACGU]":"[^ACGT]").test(s)){clearResult();return}
+   let r=calcEps(s,type);eps=r.eps;
+   if($("modeType").value==="ds"){
+     if(type!=="DNA"){clearResult();$("seqInfo").textContent="dsDNAはDNAモードで使用してください";return}
+     MW=2*calcMW(s,"DNA"); perOD=50000/MW;
+     detail=`<p>dsDNA近似：50 μg/OD260 ÷ ${fmt(MW)} Da ＝ <strong>${fmt(perOD)} nmol/OD</strong></p>`;
+   }else{
+     MW=calcMW(s,type);perOD=1000000/eps;
+     const addE=(parseFloat($("e5").value)||0)+(parseFloat($("e3").value)||0);
+     eps+=addE;perOD=1000000/eps;
+     detail=`<p>${type}、${s.length} mer</p><p>ε260：<strong>${fmt(eps)} L·mol⁻¹·cm⁻¹</strong></p><p>1 ODあたり：1,000,000 ÷ ${fmt(eps)} ＝ <strong>${fmt(perOD)} nmol</strong></p>`;
+   }
+   const c={A:0,C:0,G:0,T:0,U:0};for(const x of s)c[x]++;
+   $("A").textContent=c.A;$("C").textContent=c.C;$("G").textContent=c.G;$("U").textContent=type==="RNA"?c.U:c.T;$("lastbase").textContent=type==="RNA"?"U":"T";$("stats").classList.remove("hidden");
+   MW+=phos(m5)+phos(m3);
+   if(m5==="custom")MW+=parseFloat($("mw5").value)||0;if(m3==="custom")MW+=parseFloat($("mw3").value)||0;
+   detail+=`<p>分子量：<strong>${fmt(MW)} Da</strong></p>`;
+ }
+ const mol=OD*perOD, ugOD=mol*MW/1000, volume=target>0?mol/target*1000:NaN;
+ $("mol").textContent=fmt(mol);$("vol").textContent=fmt(volume);$("mw").textContent=MW?fmt(MW):"—";$("ugod").textContent=MW?fmt(ugOD):"—";$("ngul").textContent=MW?`${fmt(ugOD)} ng/μL per OD`:"—";$("tnote").textContent=`目標濃度：${fmt(target)} μM`;
+ $("status").textContent="自動計算済み";$("status").className="status ok";
+ detail+=`<p>総モル数：${fmt(OD)} × ${fmt(perOD)} ＝ <strong>${fmt(mol)} nmol</strong></p><p>必要液量：${fmt(mol)} ÷ ${fmt(target)} × 1000 ＝ <strong>${fmt(volume)} μL</strong></p>`;
+ $("details").innerHTML=detail;$("detail").classList.remove("hidden");
+}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>modeSet(b.dataset.mode));
+document.querySelectorAll(".type").forEach(b=>b.onclick=()=>{acid=b.dataset.type;localStorage.setItem("oligo_acid",acid);document.querySelectorAll(".type").forEach(x=>x.classList.toggle("active",x===b));calc();});
+["od","mer","od2","seq","target","modeType","m5","m3","mw5","mw3","e5","e3"].forEach(id=>$(id).addEventListener("input",()=>{if(id==="seq"){$("seq").value=$("seq").value.toUpperCase();$("seqInfo").textContent=`${clean($("seq").value).length} mer`; } $("customMods").classList.toggle("hidden",$("m5").value!=="custom"&&$("m3").value!=="custom");$("customEps").classList.toggle("hidden",$("m5").value!=="custom"&&$("m3").value!=="custom");calc();}));
+$("modeType").addEventListener("change",calc);$("m5").addEventListener("change",calc);$("m3").addEventListener("change",calc);
+$("calc").onclick=calc;
+$("reset").onclick=()=>{["od","mer","od2","seq"].forEach(x=>$(x).value="");$("target").value="100";$("m5").value="none";$("m3").value="none";$("mw5").value="0";$("mw3").value="0";$("e5").value="0";$("e3").value="0";calc();};
+modeSet(calcMode);
+})();
+</script>
+</body>
+</html>

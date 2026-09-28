@@ -49,11 +49,13 @@ input:focus,textarea:focus,select:focus{border-color:#3b82f6;background:#fff;box
 <button class="tab" data-mode="sequence">配列から計算</button>
 </div>
 
+<!-- ODと目標濃度は両モード共通。モードを切り替えても同じ入力値を使用 -->
+<div class="row"><span class="label">総OD値</span><div class="wrap"><input id="od" type="number" inputmode="decimal" min="0" step="any" placeholder="例：1.20"><span class="unit">OD</span></div></div>
+<div class="row"><span class="label">目標濃度</span><div class="wrap"><input id="target" type="number" inputmode="decimal" min="0.0001" step="any" value="100"><span class="unit">μM</span></div></div>
+
 <div id="simple">
 <div class="title">簡易計算</div>
-<div class="row"><span class="label">総OD値</span><div class="wrap"><input id="od" type="number" inputmode="decimal" min="0" step="any" placeholder="例：1.20"><span class="unit">OD</span></div></div>
 <div class="row"><span class="label">塩基数</span><div class="wrap"><input id="mer" type="number" inputmode="numeric" min="1" step="1" placeholder="例：20"><span class="unit">mer</span></div><div class="hint">1 ODあたり 90 ÷ mer nmol の目安</div></div>
-<div class="row"><span class="label">目標濃度</span><div class="wrap"><input id="target" type="number" inputmode="decimal" min="0.0001" step="any" value="100"><span class="unit">μM</span></div></div>
 </div>
 
 <div id="sequence" class="hidden">
